@@ -1,0 +1,118 @@
+<div class="desktop-content">
+    <?php
+include_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/header.php';
+?>
+        <div class="text-center">
+            <?php if ($left_projects == 0) : ?>
+            <p class="text-success">Все проекты назначены</p>
+            <?php elseif ($left_projects > 0) : ?>
+            <p class="text-info">Осталось проектов:
+                <?= $left_projects ?>
+            </p>
+            <?php else : ?>
+            <p class="text-danger">Вы назначили
+                <?= abs($left_projects) ?> лишних проектов, удалите лишние.</p>
+            <?php endif; ?>
+        </div>
+        <div class="container mt-4">
+            <h1 class="text-center">Распределение проектов</h1>
+
+            <table class="table table-bordered">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Студент</th>
+                        <th>Дисциплина</th>
+                        <th class="topic">Тема</th>
+                        <th>Оценка</th>
+                        <th>Сохранить</th>
+                        <th>Удалить</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+            foreach ($projects as $project) :
+            ?>
+                        <form class="formUpdate" action="distribution_of_projects_back.php" method="post">
+                            <input type="hidden" name="id_project" value="<?= $project['id_project'] ?>">
+                            <input type="hidden" name="old_student" value="<?= $project['student_id'] ?>">
+                            <tr>
+                                <td>
+                                    <select name="select_student" class="form-select">
+                                <?php foreach ($students as $student) : ?>
+                                <option value="<?= $student['id_user'] ?>"
+                                    <?= ($student['id_user'] == $project['student_id']) ? 'selected' : '' ?>>
+                                    <?= $student['full_name'] ?>
+                                </option>
+                                <?php endforeach; ?>
+                            </select>
+                                </td>
+                                <td>
+                                    <select name="select_object" class="form-select">
+                                <?php foreach ($objects as $object) : ?>
+                                <option value="<?= $object['id_object'] ?>"
+                                    <?= ($object['id_object'] == $project['object_id']) ? 'selected' : '' ?>>
+                                    <?= $object['name'] ?>
+                                </option>
+                                <?php endforeach; ?>
+                            </select>
+                                </td>
+                                <td>
+                                    <textarea name="topic" style="width: auto;" class="form-control" rows="3"><?= $project['topic'] ?></textarea>
+                                </td>
+                                <td>
+                                    <input type="number" name="grade" class="form-control" min="1" max="5" value="<?php if($project['grade']) echo $project['grade']  ?>">
+                                </td>
+                                <td>
+                                    <button class="btn btn-primary" type="submit">
+                                <span class="spinner-border spinner-border-sm spinnerBtn" role="status"
+                                    aria-hidden="true"></span>
+                                Сохранить
+                            </button>
+                                </td>
+                        </form>
+                        <form action="distribution_of_projects_delete.php" method="post">
+                            <input type="hidden" name="id_project" value="<?= $project['id_project'] ?>">
+                            <td>
+                                <button type="submit" class="btn btn-primary">Удалить</button>
+                            </td>
+                        </form>
+                        </tr>
+                        <?php endforeach; ?>
+                </tbody>
+            </table>
+
+            <?php if ($left_projects != 0) : ?>
+            <hr>
+            <form action="distribution_of_projects_create_new.php" class="formAdd" method="post">
+                <div class="table">
+                    <h2 class="text-center">Добавить проект</h2>
+                    <div class="row d-flex align-items-center">
+                        <div class="col-4">
+                            <select id="addSelect" name="select_student" class="form-select">
+                            <?php foreach ($students as $student) : ?>
+                            <option value="<?= $student['id_user'] ?>"><?= $student['full_name'] ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                        </div>
+                        <div class="col-4">
+                            <select name="select_object" class="form-select">
+                            <?php foreach ($objects as $object) : ?>
+                            <option value="<?= $object['id_object'] ?>"><?= $object['name'] ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                        </div>
+                        <div class="col-4">
+                            <textarea id="addTxtArea" name="topic" class="form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col text-center">
+                            <button type="submit" class="btn btn-primary" <?php if ($left_projects==0 ) echo 'disabled'; ?>>Добавить</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <?php endif; ?>
+
+        </div>
+</div>

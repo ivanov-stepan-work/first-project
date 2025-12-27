@@ -1,0 +1,11 @@
+<?php
+require_once "../connect.php";
+session_start();
+if(!in_array('3', $_SESSION['user']['role']))
+header("Location: ../../index.php");
+function exist_student($id_student){
+    require "../connect.php";
+    $exist_student = $connect->query("SELECT EXISTS (SELECT * FROM projects WHERE `student_id` = '$id_student')");
+    if($exist_student){
+    return 1;}}
+?>
